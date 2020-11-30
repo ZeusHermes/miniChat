@@ -4,7 +4,7 @@ export default{
 			{
 				id:1,
 				imgurl:'four.png',
-				tip:2,
+				tip:123132,
 				name:'大海',
 				time:new Date(),
 				news:'盛年不重来，一日难再晨。及时宜自勉，岁月不待人盛年不重来，一日难再晨。及时宜自勉，岁月不待人盛年不重来，一日难再晨。及时宜自勉，岁月不待人'

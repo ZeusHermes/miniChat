@@ -21,7 +21,17 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/search/search",
+            "style" :                                                                                    
+            {
+				"navigationStyle": "custom",
+                // "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

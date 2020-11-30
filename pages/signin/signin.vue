@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="top-bar">
 			<view class="top-bar-right">
-				<view class='text'>
+				<view class='text' @tap="toSignUp">
 					注册
 				</view>
 			</view>
@@ -17,15 +17,15 @@
 					您好！欢迎来到mini
 				</view>
 				<view class="inputs">
-					<input type="text" value="" placeholder="用户名/邮箱" class='user' placeholder-style="color:#aaa;font-weight:400" />
-					<input type="password" value="" placeholder="密码" class="pwd" placeholder-style="color:#aaa;font-weight:400" />
+					<input type="text" value="" @blur="getUser" placeholder="用户名/邮箱" class='user' placeholder-style="color:#aaa;font-weight:400" />
+					<input type="password" value="" @blur="getPassword" placeholder="密码" class="pwd" placeholder-style="color:#aaa;font-weight:400" />
 
 				</view>
 				<view class="tips">
 					输入密码或用户名错误！
 				</view>
 			</view>
-			<button class="submit">登录</button>
+			<button class="submit" @tap="login">登录</button>
 		</view>
 
 	</view>
@@ -35,43 +35,55 @@
 	export default {
 		data() {
 			return {
-
+user:null,
+password:null
 			}
 		},
 		methods: {
-
+			toSignUp() {
+				uni.navigateTo({
+					url: '../signup/signup'
+				})
+			},
+			getUser(e){
+				this.user = e.detail.value
+			},
+			getPassword(){
+				this.password = e.detail.value
+			},
 		}
 	}
 </script>
 
 <style lang="scss">
+	@import "../../commons/css/mycss.scss";
 	.content {
 		padding-top: var(--status-bar-height);
 	}
 
-	.top-bar {
-		width: 100%;
-		position: fixed;
-		padding-top: var(--status-bar-height);
-		top: 0;
-		left: 0;
-		height: 88rpx;
-		box-sizing: border-box;
-		background-color: $uni-bg-color;
+	// .top-bar {
+	// 	width: 100%;
+	// 	position: fixed;
+	// 	padding-top: var(--status-bar-height);
+	// 	top: 0;
+	// 	left: 0;
+	// 	height: 88rpx;
+	// 	box-sizing: border-box;
+	// 	background-color: $uni-bg-color;
 
-		.top-bar-right {
-			float: right;
-			padding-right: 32rpx;
+	// 	.top-bar-right {
+	// 		float: right;
+	// 		padding-right: 32rpx;
 
-			.text {
-				font-size: $uni-font-size-lg;
-				color: $uni-text-color;
-				line-height: 88rpx;
-				font-weight: 500;
-			}
+			// .text {
+			// 	font-size: $uni-font-size-lg;
+			// 	color: $uni-text-color;
+			// 	line-height: 88rpx;
+			// 	font-weight: 500;
+			// }
 
-		}
-	}
+	// 	}
+	// }
 
 	.logo {
 
@@ -114,11 +126,12 @@
 				border-bottom: 1rpx solid $uni-border-color;
 			}
 		}
-		.tips{
+
+		.tips {
 			font-size: $uni-font-size-lg;
 			color: $uni-color-warning;
 			line-height: 56rpx;
-			float:left;
+			float: left;
 		}
 	}
 

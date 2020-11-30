@@ -41,7 +41,7 @@
 			<view class="friends">
 				<view class="friend-list" v-for="(item,index) in friends" :key="item.id">
 					<view class="friend-list-l">
-						<text class="tip">{{item.tip}}</text>
+						<text class="tip">{{item.tip>99?'99+':item.tip}}</text>
 						<image :src="'../../static/images/img/'+item.imgurl" mode=""></image>
 					</view>
 					<view class="friend-list-r">
@@ -88,83 +88,25 @@
 </script>
 
 <style lang="scss">
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding-top: var(--status-bar-height);
-		padding-bottom: $uni-spacing-col-base;
-	}
+	@import "../../commons/css/mycss.scss";
+
+	// .content {
+	// 	display: flex;
+	// 	flex-direction: column;
+	// 	align-items: center;
+	// 	justify-content: center;
+	// 	padding-top: var(--status-bar-height);
+		
+	// }
 
 	.top-bar {
-		width: 100%;
-		position: fixed;
-		padding-top: var(--status-bar-height);
-		top: 0;
-		left: 0;
-		height: 88rpx;
-		box-sizing: border-box;
-		background-color: $uni-bg-color;
 		border-bottom: 1rpx solid $uni-border-color;
-		// box-shadow: 0rpx 1rpx 0rpx 0rpx rgba(0, 0, 0, 1);
-		// padding-left: $uni-spacing-row-base;
-
-
-		.top-bar-left {
-			float: left;
-			padding-left: $uni-spacing-row-base;
-
-			image {
-				width: 68rpx;
-				height: 68rpx;
-				border-radius: 16rpx;
-				margin-top: 10rpx;
-			}
-		}
-
-		.top-bar-center {
-			position: absolute;
-			text-align: center;
-			left: 0;
-			right: 0;
-			top: 0;
-			margin: auto;
-			bottom: 0;
-
-			.logo {
-				width: 88rpx;
-				height: 42rpx;
-				padding-top: 19rpx;
-			}
-		}
-
-		.top-bar-right {
-			float: right;
-			padding-right: 14rpx;
-
-			.search {
-				width: 88rpx;
-				height: 88rpx;
-				display: inline-block;
-			}
-
-			.add {
-				width: 88rpx;
-				height: 88rpx;
-				display: inline-block;
-			}
-
-			image {
-				padding: 18rpx 0 0 18rpx;
-				width: 52rpx;
-				height: 52rpx;
-			}
-		}
+		background: rgba(255,255,255,0.96);
 	}
 
 	.main {
 		padding-top: 104rpx;
+		padding-bottom: $uni-spacing-col-base;
 	}
 
 	.friend-list {
