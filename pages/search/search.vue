@@ -6,26 +6,29 @@
 				<input type="text" class='search' placeholder="搜索用户/群" @input="getUser" value="" />
 			</view>
 			<view class="top-bar-right">
-				<view class="text">取消</view>
+				<view class="text" @tap="backOne">取消</view>
 			</view>
 		</view>
 		<view class="main">
 			<view class="search-user result">
-				<view class="title">
+				<view class="title" v-if="searchUserdata.length>0">
 					用户
 				</view>
-				<view class="list user">
-					<image src="../../static/images/img/four.png" mode=""></image>
+				<view class="list user" v-for="item in searchUserdata" :key="item.id">
+					<navigator url="../userhome/userhome?id=11111" class="top-bar-left">
+						<image :src="'../../static/images/img/'+item.imgurl" mode=""></image>
+					</navigator>
 					<view class="names">
-						<view class="name">
-							大力水手
+						<view class="name" v-html="item.name">
 						</view>
-						<view class="email">
-							dalishuui@qq.com
+						<view class="email" v-html="item.email">
 						</view>
 					</view>
-					<view class="right-btn send">
+					<view class="right-btn send" v-if="item.isFriend!==1">
 						发消息
+					</view>
+					<view class="right-btn add" v-if="item.isFriend===1">
+						加好友
 					</view>
 				</view>
 				<view class="list user">
@@ -48,14 +51,47 @@
 </template>
 
 <script>
+	import datas from '../../commons/js/datas.js'
 	export default {
 		data() {
 			return {
-
+				searchUserdata: []
 			};
 		},
 		methods: {
-			getUser() {}
+			getUser(e) {
+				this.searchUserdata = []
+				let search = e.detail.value
+				this.searchUser(search)
+			},
+			searchUser(data) {
+				let arr = datas.friends()
+				let reg = eval('/'+data+'/g')
+				for (let i = 0; i < arr.length; i++) {
+					if (arr[i].name.search(data) !== -1 || arr[i].email.search(data) !== -1) {
+						this.isFriend(arr[i])
+						arr[i].name=arr[i].name.replace(reg, '<span style="color:#4AAAFF">'+data+'</span>')
+						arr[i].email=arr[i].email.replace(reg, '<span style="color:#4AAAFF">'+data+'</span>')
+						this.searchUserdata.push(arr[i])
+					}
+					console.log(this.searchUserdata)
+				}
+			},
+			isFriend(data){
+				let isFriend = 0;
+				let arrfriend = datas.isFriend()
+				for(let i =0;i<arrfriend.length;i++){
+					if(arrfriend[i].friendId === data.id){
+						isFriend=1
+					}
+				}
+				data.isFriend = isFriend
+			},
+			backOne(){
+				uni.navigateBack({
+				    delta: 1
+				});
+			}
 		}
 	}
 </script>
@@ -129,11 +165,13 @@
 				color: $uni-text-color;
 				line-height: 50rpx;
 			}
-.email{
-	font-size: $uni-font-size-sm;
-	color: $uni-text-color;
-	line-height: 28rpx;
-}
+
+			.email {
+				font-size: $uni-font-size-sm;
+				color: $uni-text-color;
+				line-height: 28rpx;
+			}
+
 			.right-btn {
 				float: right;
 				font-size: $uni-font-size-sm;
@@ -145,13 +183,15 @@
 				margin-top: 16rpx;
 
 			}
-			.send{
+
+			.send {
 				background-color: $uni-color-primary;
 				color: $uni-text-color;
 			}
-			.add{
+
+			.add {
 				color: $uni-color-success;
-				background-color: rgba(74,170,255,0.1);
+				background-color: rgba(74, 170, 255, 0.1);
 			}
 		}
 	}

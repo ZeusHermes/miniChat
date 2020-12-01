@@ -83,10 +83,9 @@
 				this.isok()
 			},
 			toSignIn(){
-				uni.navigateTo({
-					url:'../signin/signin',
-					//delta:1
-				})
+				uni.navigateBack({
+				    delta: 1
+				});
 			},
 			getUser(e){
 				this.user = e.detail.value

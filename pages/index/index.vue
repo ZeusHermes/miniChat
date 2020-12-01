@@ -1,14 +1,15 @@
 <template>
 	<view class="content">
 		<view class="top-bar">
-			<view class="top-bar-left">
+			<!-- 跳转有问题 -->
+			<navigator url="../userhome/userhome?id=11111" class="top-bar-left">
 				<image src='../../static/images/img/four.png'></image>
-			</view>
+			</navigator>
 			<view class="top-bar-center">
 				<image class='logo' src='../../static/images/index/logo.png'></image>
 			</view>
 			<view class="top-bar-right">
-				<view class='search'>
+				<view class='search' @tap="toSearch">
 					<image src="../../static/images/index/search.png"></image>
 				</view>
 				<view class='add'>
@@ -82,6 +83,11 @@
 			getFriends() {
 				this.friends = datas.friends()
 				console.log(this.friends)
+			},
+			toSearch() {
+				uni.navigateTo({
+					url: '../search/search'
+				});
 			}
 		}
 	}
@@ -96,12 +102,12 @@
 	// 	align-items: center;
 	// 	justify-content: center;
 	// 	padding-top: var(--status-bar-height);
-		
+
 	// }
 
 	.top-bar {
 		border-bottom: 1rpx solid $uni-border-color;
-		background: rgba(255,255,255,0.96);
+		background: rgba(255, 255, 255, 0.96);
 	}
 
 	.main {
