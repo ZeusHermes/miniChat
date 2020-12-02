@@ -129,5 +129,95 @@ export default {
 				friendId: 8
 			}
 		]
+	},
+	message:function(){
+		return[
+			{
+				id:'b',
+				imgurl:'one.png',
+				types:2,
+				message:{
+					voice:'a',
+					time:60
+				},
+				time:new Date() - 1000,
+				tip:20
+			},
+			{
+				id:'a',
+				imgurl:'one.png',
+				types:2,
+				message:{
+					voice:'a',
+					time:20
+				},
+				time:new Date() - 1000,
+				tip:23
+			},
+			{
+				id:'1',
+				imgurl:'one.png',
+				types:0,
+				message:'山有木兮木有枝，心悦君兮君不知。____佚名《越人歌》',
+				time:new Date() - 1000,
+				tip:1
+			},
+			{
+				id:'b',
+				imgurl:'one.png',
+				types:0,
+				message:'人生若只如初见，何事秋风悲画扇。____纳兰性德《木兰词·拟古决绝词柬友》',
+				time:new Date() - 1000*16,
+				tip:1
+			},
+			{
+				id:'1',
+				imgurl:'one.png',
+				types:0,
+				message:'十年生死两茫茫，不思量，自难忘。____苏轼《江城子·乙卯正月二十日夜记梦》',
+				time:new Date() - 1000*32,
+				tip:1
+			},
+			{
+				id:'b',
+				imgurl:'one.png',
+				types:0,
+				message:'曾经沧海难为水，除却巫山不是云。____元稹《离思五首·其四》',
+				time:new Date() - 1000*(60*4),
+				tip:1
+			},
+			{
+				id:'1',
+				imgurl:'one.png',
+				types:0,
+				message:'tow.png',
+				time:new Date() - 1000*(60*16),
+				tip:1
+			},
+			{
+				id:'b',
+				imgurl:'one.png',
+				types:0,
+				message:'只愿君心似我心，定不负相思意。____李之仪',
+				time:new Date() - 1000*(60*32),
+				tip:1
+			},
+			{
+				id:'b',
+				imgurl:'one.png',
+				types:1,
+				message:'one.png',
+				time:new Date() - 1000*(60*46),
+				tip:1
+			},
+			{
+				id:'1',
+				imgurl:'one.png',
+				types:1,
+				message:'one.png',
+				time:new Date() - 1000*(60*66),
+				tip:1
+			}
+		]
 	}
 }

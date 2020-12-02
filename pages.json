@@ -45,7 +45,34 @@
             "path" : "pages/userdetails/userdetails",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationStyle": "custom",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/friendrequest/friendrequest",
+            "style" :                                                                                    
+            {
+                  "navigationStyle": "custom",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/chatroom/chatroom",
+            "style" :                                                                                    
+            {
+                "navigationStyle": "custom",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "components/submit/submit",
+            "style" :                                                                                    
+            {
+                "navigationStyle": "custom",
                 "enablePullDownRefresh": false
             }
             

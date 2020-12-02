@@ -104,6 +104,13 @@
 	// 	padding-top: var(--status-bar-height);
 
 	// }
+	.top-bar-right {
+		.image {
+			padding: 18rpx 0 0 18rpx;
+			width: 52rpx;
+			height: 52rpx;
+		}
+	}
 
 	.top-bar {
 		border-bottom: 1rpx solid $uni-border-color;
