@@ -12,7 +12,7 @@
 				<view class='search' @tap="toSearch">
 					<image src="../../static/images/index/search.png"></image>
 				</view>
-				<view class='add'>
+				<view class='add' @tap="buildGroup">
 					<image src="../../static/images/index/add.png"></image>
 				</view>
 			</view>
@@ -88,6 +88,11 @@
 				uni.navigateTo({
 					url: '../search/search'
 				});
+			},
+			buildGroup(){
+				uni.navigateTo({
+					url: '../buildgroup/buildgroup'
+				});
 			}
 		}
 	}
@@ -105,7 +110,7 @@
 
 	// }
 	.top-bar-right {
-		.image {
+		image {
 			padding: 18rpx 0 0 18rpx;
 			width: 52rpx;
 			height: 52rpx;

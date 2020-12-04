@@ -69,7 +69,16 @@
             
         }
         ,{
-            "path" : "components/submit/submit",
+            "path" : "pages/buildgroup/buildgroup",
+            "style" :                                                                                    
+            {
+                "navigationStyle": "custom",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/grouphome/grouphome",
             "style" :                                                                                    
             {
                 "navigationStyle": "custom",

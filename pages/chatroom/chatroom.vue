@@ -16,43 +16,81 @@
 				</view>
 			</view>
 		</view>
-		<scroll-view class="chat" scroll-y="true" scoll-width-animation="true" :scroll-into-view="scrollToView">
+		<scroll-view @scrolltoupper='scrolltoupper' class="chat" scroll-y="true" :scoll-width-animation="scollanimation" :scroll-into-view="scrollToView">
 			<view class="chat-main" :style="{paddingBottom:inputh+'rpx'}">
+				<view class="loading" v-show="loadingshow">
+					<image :animation="animationData" class="loading-img" src="../../static/images/chatroom/loading.png" mode=""></image>
+				</view>
 				<view class="chat-ls" v-for="(item,index) in messgaeDta" :key="index" :id="'msg'+index">
 					<view class="chat-time">
 						{{item.time}}{{index}}
 					</view>
 					<view class="msg-m msg-left" v-if="item.id!=='b'">
 						<image :src="'../../static/images/img/'+item.imgurl" class="user-img" mode=""></image>
-						<view class="message">
-							<view class="msg-text" v-if="item.types===0">
+						<view class="message" v-if="item.types===0">
+							<view class="msg-text">
 								{{item.message}}
 							</view>
-							<view class="msg-text voice" v-if="item.types===2" :style="{width:item.message.time*4+'px'}">
+						</view>
+						<view class="message" v-if="item.types===2">
+							<view class="msg-text voice" :style="{width:item.message.time*4+'px'}">
 								<image src="../../static/images/submit/yuyin.png" mode="" class="voice-img"></image>
 								{{item.message.time}}"
 							</view>
-							<view @tap="privewImg('../../static/images/img/'+item.message)" class="msg-img" v-if="item.types===1">
+						</view>
+						<view class="message" v-if="item.types===1">
+							<view @tap="privewImg('../../static/images/img/'+item.message)" class="msg-img">
 								<image :src="'../../static/images/img/'+item.message" mode="widthFix"></image>
+							</view>
+						</view>
+						<view class="message" v-if="item.types===3" @tap="openlocation(item.message)">
+							<!-- 位置 -->
+							<view class="msg-map">
+								<view class="map-name">
+									{{item.message.name}}
+								</view>
+								<view class="map-adress">
+									{{item.message.address}}
+								</view>
+								<image class="map-img" src="../../static/images/chatroom/map.png" mode=""></image>
+								<map class='map' :markers="markers(item.message.latitude,item.message.longitude)" :latitude="item.message.latitude"
+								 :longitude="item.message.longitude"></map>
 							</view>
 						</view>
 					</view>
 					<view class="msg-m msg-right" v-if="item.id==='b'">
 						<image :src="'../../static/images/img/'+item.imgurl" class="user-img" mode=""></image>
-						<view class="message">
+						<view class="message" v-if="item.types===0">
 							<!-- 文字 -->
-							<view class="msg-text" v-if="item.types===0">
+							<view class="msg-text">
 								{{item.message}}
 							</view>
+						</view>
+						<view class="message" v-if="item.types===2">
 							<!-- 音频 -->
-							<view class="msg-text voice" v-if="item.types===2" :style="{width:item.message.time*4+'px'}">
+							<view class="msg-text voice" :style="{width:item.message.time*4+'px'}" @tap="playVoice(item.message.voice)">
 								<image src="../../static/images/submit/yuyin.png" mode="" class="voice-img"></image>
 								{{item.message.time}}"
 							</view>
+						</view>
+						<view class="message" v-if="item.types===1">
 							<!-- 图片 -->
-							<view @tap="privewImg('../../static/images/img/'+item.message)" class="msg-img" v-if="item.types===1">
+							<view @tap="privewImg('../../static/images/img/'+item.message)" class="msg-img">
 								<image v-if="!item.message.includes('blob')" :src="'../../static/images/img/'+item.message" mode="widthFix"></image>
 								<image v-if="item.message.includes('blob')" :src="item.message" mode="widthFix"></image>
+							</view>
+						</view>
+						<view class="message" v-if="item.types===3" @tap="openlocation(item.message)">
+							<!-- 位置 -->
+							<view class="msg-map">
+								<view class="map-name">
+									{{item.message.name}}
+								</view>
+								<view class="map-adress">
+									{{item.message.address}}
+								</view>
+								<image class="map-img" src="../../static/images/chatroom/map.png" mode=""></image>
+								<!-- <map class='map' :markers="markers(item.message.latitude,item.message.longitude)" :latitude="item.message.latitude" :longitude="item.message.longitude"></map> -->
 							</view>
 						</view>
 					</view>
@@ -71,10 +109,8 @@
 						</view>
 					</view>
 				</view>
-
 			</view>
 			<!-- <view class="padbt">
-
 			</view> -->
 		</scroll-view>
 		<submit @setListBottom='setListBottom' @sendMsg="sendMsg"></submit>
@@ -84,26 +120,52 @@
 <script>
 	import datas from '../../commons/js/datas.js'
 	import submit from '../../components/submit/submit.vue'
+	const innerAudioContext = uni.createInnerAudioContext()
 	export default {
+
 		data() {
 			return {
 				scrollToView: '',
 				messgaeDta: [],
 				messageImg: [],
-				inputh: '120'
+				inputh: '120',
+				animationData: {},
+				nowpage:0,
+				timer:null,
+				loadingshow:false,
+				scollanimation:true//加载动画
 			}
 		},
 		onLoad() {
-			this.getMessage()
+			this.getMessage(this.nowpage)
+			this.nextpageanimation()
 		},
 		components: {
 			submit
 		},
 		methods: {
-			getMessage() {
+			  nextpageanimation(){
+			    var animation = uni.createAnimation({
+			      duration: 1000,
+			      timingFunction: 'step-start',
+			    })
+			    this.animation = animation
+				let i = 1
+			    this.timer = setInterval(function() {
+			      animation.rotate(-i*30).step()
+			      this.animationData = animation.export()
+				  i++
+				  //this.getMessage(this.nowpage) 滑倒顶部加载
+			    }.bind(this), 100)
+			  },
+			  scrolltoupper(){
+				  // 滚动顶部出发事件
+			  },
+			getMessage(page) {
+				// .splice(page,page*10+10)
 				let data = datas.message()
-				this.messgaeDta = data.reverse()
-
+				this.messgaeDta =data.reverse()
+				// this.messgaeDta = [...data.reverse(),...this.messgaeDta]
 				for (let i = 0; i < data.length; i++) {
 					if (data[i].types === 1) {
 						this.messageImg.push('../../static/images/img/' + data[i].message)
@@ -112,6 +174,10 @@
 				this.$nextTick(function() {
 					this.scrollToView = 'msg7' // 滚动到某一条
 				})
+				// if(this.nowpage>datas.message().length+1){
+				// 	this.nowpage++
+				// }
+				// timer清空计时器-加载
 				console.log(this.messageImg, '----------')
 				// for(let i =0;i<this.messgaeDta.length;i++){
 				// 	this.messgaeDta.unshift(this.messgaeDta[i])
@@ -138,7 +204,7 @@
 				console.log(data.msg)
 				let sendMsg = {
 					id: 'b',
-					imgurl: 'one.png',
+					imgurl: 'four.png',
 					types: data.type,
 					message: data.msg,
 					time: new Date().getTime(),
@@ -157,10 +223,36 @@
 				console.log(bottom)
 			},
 			goBottom() {
+				this.scollanimation = true
 				this.scrollToView = ''
 				this.$nextTick(function() {
 					this.scrollToView = 'msg' + (this.messgaeDta.length - 1)
 				})
+			},
+			// 音频播放
+			playVoice(voiceurl) {
+				innerAudioContext.src = voiceurl;
+				innerAudioContext.onPlay();
+			},
+			// 显示定位
+			markers(latitude, longitude) {
+				return [{
+					latitude: latitude,
+					longitude: longitude,
+					iconPath: '../../static/images/chatroom/dw.png'
+				}]
+			},
+			// 查看位置
+			openlocation(map) {
+				uni.openLocation({
+					latitude: map.latitude,
+					longitude: map.longitude,
+					address: map.address,
+					name: map.name,
+					success: function() {
+						console.log('success');
+					}
+				});
 			}
 
 		}
@@ -214,6 +306,15 @@
 			display: flex;
 			flex-direction: column;
 
+			.loading {
+				text-align: center;
+
+				.loading-img {
+					width: 60rpx;
+					height: 60rpx;
+				}
+			}
+
 			.chat-ls {
 				.chat-time {
 					font-size: $uni-font-size-sm;
@@ -251,13 +352,60 @@
 							max-width: 100%;
 						}
 					}
-					.voice{
+
+					.voice {
 						min-width: 80rpx;
-						max-height: 400rpx;
+						max-width: 400rpx;
 					}
-					.voice-img{
+
+					.voice-img {
 						width: 36rpx;
 						height: 36rpx;
+					}
+
+					.msg-map {
+						background-color: #FFF;
+						width: 464rpx;
+						height: 284rpx;
+						overflow: hidden;
+
+						.map-name {
+							font-size: $uni-font-size-lg;
+							color: $uni-text-color;
+							line-height: 44rpx;
+							padding: 18rpx 24rpx 0 24rpx;
+							display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 1;
+							overflow: hidden;
+						}
+
+						.map-adress {
+							font-size: $uni-font-size-sm;
+							color: $uni-text-color-disable;
+							padding: 0rpx 24rpx;
+							display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 1;
+							overflow: hidden;
+						}
+
+						.map {
+							padding-top: 8rpx;
+							width: 464rpx;
+							height: 180rpx;
+
+							.csssprite {
+								width: 60rpx;
+								height: auto;
+							}
+						}
+
+						.map-img {
+							padding-top: 8rpx;
+							width: 464rpx;
+							height: 180rpx;
+						}
 					}
 				}
 
@@ -273,20 +421,28 @@
 					.msg-img {
 						margin-left: 16rpx;
 					}
-					.voice{
+
+					.voice {
 						text-align: right;
 					}
-					.voice-img{
+
+					.voice-img {
 						width: 36rpx;
 						height: 36rpx;
 						transform: rotate(180deg);
 						float: left;
 						padding-bottom: 4rpx;
 					}
+
+					.msg-map {
+						border-radius: 0rpx 20rpx 20rpx 20rpx;
+						margin-left: 16rpx;
+					}
 				}
 
 				.msg-right {
 					flex-direction: row-reverse;
+
 					.msg-text {
 						background-color: #FFF260;
 						border-radius: 20rpx 0rpx 20rpx 20rpx;
@@ -296,15 +452,22 @@
 					.msg-img {
 						margin-right: 16rpx;
 					}
-					.voice{
-						text-align:left;
+
+					.voice {
+						text-align: left;
 						box-sizing: border-box;
 					}
-					.voice-img{
+
+					.voice-img {
 						width: 36rpx;
 						height: 36rpx;
 						float: right;
 						padding-top: 4rpx;
+					}
+
+					.msg-map {
+						border-radius: 20rpx 0rpx 20rpx 20rpx;
+						margin-right: 16rpx;
 					}
 				}
 			}

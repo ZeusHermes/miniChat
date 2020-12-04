@@ -126,6 +126,9 @@
 			<view class="btn2">
 				退出登录
 			</view>
+			<!-- <view class="btn2" > // 判断id
+				删除好友 
+			</view> -->
 		</view>
 		<view class="modify" :style="{bottom:-addHeight+'px'}" :animation="animationData">
 			<view class="modify-head">

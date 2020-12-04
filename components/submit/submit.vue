@@ -7,7 +7,7 @@
 				</view>
 				<textarea value="" class="chat-send btn" v-if="!isrecord" v-model="msg" @input="inputs" auto-height="true"
 				 placeholder="" @focus="focushidden" />
-				<view class="record btn" v-if="isrecord"  @touchstart="touchstart" @touchend="touchend">
+				<view class="record btn" v-if="isrecord"  @touchstart="touchstart" @touchend="touchend" @touchmove="touchmove">
 					按住说话
 				</view>
 				<view class="bt-img" @tap="emoj">
@@ -41,7 +41,7 @@
 						拍照
 					</view>
 				</view>
-				<view class="more-list">
+				<view class="more-list" @tap="chooseMap">
 					<image src="../../static/images/submit/dw.png" mode=""></image>
 					<view class="more-list-title">
 						定位
@@ -61,6 +61,16 @@
 				</view>
 			</view>
 		</view>
+		<view class="voice-bg" v-if="voicebg">
+			<view class="voice-bg-length">
+				<view class="voice-bg-time" :style="{width:timeLength/0.6+'%'}">
+					{{timeLength}}"
+				</view>
+			</view>
+			<view class="voice-del">
+				上滑取消语音
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -72,9 +82,13 @@
 			return {
 				isrecord:false,
 				isEmoj:false,
-				isMore:true,
+				isMore:false,
+				voicebg:false,
 				msg:'',
 				timer:null,
+				voicePath:null,
+				timeLength:0,
+				pageY:0,
 				toc:'../../static/images/submit/yuy.png'
 			};
 		},
@@ -182,19 +196,64 @@
 				    }
 				});
 			},
-			touchstart(){
+			// 音频处理
+			touchstart(e){
+				this.pageY=e.changedTouches[0].pageY
+				this.voicebg = true
+				let i = 0
 				this.timer = setInterval(()=>{
 					i++
-					if(i>10){
+					this.timeLength = i
+					console.log(i)
+					if(i>60){
 						clearInterval(this.timer)
+						this.touchend()
 					}
 				},1000)
 				recorderManager.start();
-				// 影评处理
+				// 音频处理
 			},
 			touchend(){
+				this.timeLength=0
+				this.voicebg = false
+				let _this = this
 				clearInterval(this.timer)
 				 recorderManager.stop();
+				 recorderManager.onStop(function (res) {
+					 let msg = {
+						 voice:res.tempFilePath,
+						 time:this.timeLength
+					 }
+					if(this.voicebg){
+						_this.send(msg,2)
+					}
+				});
+				this.voicebg = false
+			},
+			// 终止录音
+			touchmove(e){
+				if(this.pageY - e.changedTouches[0].pageY>100){
+					this.voicebg = false
+				}
+			},
+			chooseMap(){
+				let data = null
+				let _this= this
+				uni.chooseLocation({
+				    success: function (res) {
+				        console.log('位置名称：' + res.name);
+				        console.log('详细地址：' + res.address);
+				        console.log('纬度：' + res.latitude);
+				        console.log('经度：' + res.longitude);
+						data={
+							name:res.name,
+							address:res.address,
+							latitude:res.latitude,
+							longitude:res.longitude
+						}
+						_this.send(data,3)
+				    }
+				});
 			}
 		}
 	}
@@ -207,7 +266,7 @@
 	width: 100%;
 	position: fixed;
 	bottom: 0;
-	z-index: 100;
+	z-index: 10002;
 	padding-bottom: env(safe-area-inset-bottom);
 }
 .subnit-chat{
@@ -254,7 +313,7 @@
 			background-color: rgba(236,237,237,0.9);
 			position: fixed;
 			right: 0;
-			bottom: env(safe-area-inset-bottom);;
+			bottom: env(safe-area-inset-bottom);
 			display: flex;
 			.emoji-send-btn{
 				flex: 1;
@@ -314,5 +373,43 @@
 			}
 		}
 		
+	}
+	.voice-bg{
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0,0,0,0.3);
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		z-index: 1000;
+		.voice-bg-length{
+			height: 84rpx;
+			width: 600rpx;
+			margin: auto;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			background-color: rgba(255,255,255,0.2);
+			border-radius: 42rpx;
+			text-align: center;
+			.voice-bg-time{
+				line-height: 84rpx;
+				background-color: $uni-color-primary;
+				border-radius: 42rpx;
+				min-width: 120rpx;
+				display: inline-block;
+			}
+		}
+		.voice-del{
+			position: absolute;
+			bottom: 148rpx;
+			width: 100%;
+			text-align: center;
+			color: #FFF;
+			margin-bottom:env(safe-area-inset-bottom);
+			font-size: $uni-font-size-base;
+		}
 	}
 </style>

@@ -135,6 +135,32 @@ export default {
 			{
 				id:'b',
 				imgurl:'one.png',
+				types:3,
+				message:{
+					address: "贵州省贵阳市南明区箭道街23号贵州名族文化宫2～3楼",
+					latitude: 26.568322,
+					longitude: 106.712642,
+					name: "贵州省民族博物馆"
+				},
+				time:new Date() - 1000,
+				tip:20
+			},
+			{
+				id:'a',
+				imgurl:'one.png',
+				types:3,
+				message:{
+					address: "贵州省贵阳市南明区箭道街22号",
+					latitude: 26.568746,
+					longitude: 106.715151,
+					name: "国家税务总局贵阳市南明区税务局办税服务厅"
+				},
+				time:new Date() - 1000,
+				tip:20
+			},
+			{
+				id:'b',
+				imgurl:'one.png',
 				types:2,
 				message:{
 					voice:'a',
